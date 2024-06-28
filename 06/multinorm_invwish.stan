@@ -11,6 +11,7 @@ parameters {
   vector[d] mu;                // mean
   cov_matrix[d] Sigma;          // covariance matrix
 }
+ 
 
 model {
   Sigma ~ inv_wishart(prior_wish, diag_matrix(diag_cov)); // Prior on the covariance matrix
@@ -24,10 +25,11 @@ model {
 }
 
 generated quantities {
-  vector[d] y_prior_pd;
   cov_matrix[d] prior_Sigma;
   prior_Sigma = inv_wishart_rng(prior_wish, diag_matrix(diag_cov));
-  y_prior_pd = multi_normal_rng(prior_mu, prior_Sigma);
+
+  vector[d] prior_pd;
+  prior_pd = multi_normal_rng(prior_mu, prior_Sigma);
 
   vector[d] y_tilde;
   y_tilde = multi_normal_rng(mu, Sigma);
